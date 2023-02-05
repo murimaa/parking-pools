@@ -1,21 +1,18 @@
 # ParkingPool
 
-**TODO: Add description**
+To start your Phoenix server:
 
-## Installation
+* Run `mix setup` to install and setup dependencies
+* Start Phoenix endpoint with `mix phx.server`
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `parking_pool` to your list of dependencies in `mix.exs`:
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-```elixir
-def deps do
-  [
-    {:parking_pool, "~> 0.1.0"}
-  ]
-end
-```
+Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/parking_pool>.
+## Learn more
 
+* Official website: https://www.phoenixframework.org/
+* Guides: https://hexdocs.pm/phoenix/overview.html
+* Docs: https://hexdocs.pm/phoenix
+* Forum: https://elixirforum.com/c/phoenix-forum
+* Source: https://github.com/phoenixframework/phoenix

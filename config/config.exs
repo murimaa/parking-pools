@@ -9,9 +9,49 @@
 # move said applications out of the umbrella.
 import Config
 
-# Sample configuration:
-#
+config :parking_pool_web,
+  generators: [context_app: false]
+
+# Configures the endpoint
+config :parking_pool_web, ParkingPoolWeb.Endpoint,
+  url: [host: "localhost"],
+  render_errors: [
+    formats: [html: ParkingPoolWeb.ErrorHTML, json: ParkingPoolWeb.ErrorJSON],
+    layout: false
+  ],
+  pubsub_server: ParkingPoolWeb.PubSub,
+  live_view: [signing_salt: "neJmk15S"]
+
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.14.41",
+  default: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../apps/parking_pool_web/assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.2.4",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../apps/parking_pool_web/assets", __DIR__)
+  ]
+
+# Configures Elixir's Logger
 config :logger, :console,
-  level: :info,
-  format: "$date $time [$level] $metadata$message\n",
-  metadata: [:user_id]
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{config_env()}.exs"
