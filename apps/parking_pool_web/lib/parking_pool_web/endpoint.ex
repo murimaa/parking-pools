@@ -11,7 +11,7 @@ defmodule ParkingPoolWeb.Endpoint do
     same_site: "Lax"
   ]
 
-  socket "/socket", ParkingPoolWeb.Socket, websocket: true, longpoll: false
+  socket "/socket", ParkingPoolWeb.Socket.ParkingSocket, websocket: true, longpoll: false
 
   # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 

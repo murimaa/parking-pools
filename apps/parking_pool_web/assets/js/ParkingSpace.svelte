@@ -1,11 +1,16 @@
 <script>
-    import {Socket} from "phoenix"
+    export let socket;
+    export let id;
+
+    let reserved = true;
+
+    const channel = socket.channel(`parking_space:${id}`, {});
+    channel.join()
 
     function onClick(e) {
         reserved = !reserved;
         e.preventDefault();
     }
-    let reserved = true
 </script>
             <a
                     on:click={onClick}
