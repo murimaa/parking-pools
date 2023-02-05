@@ -6,7 +6,8 @@ defmodule MixProject do
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -18,4 +19,16 @@ defmodule MixProject do
   defp deps do
     []
   end
+
+  # Aliases are shortcuts or tasks specific to the current project.
+  #
+  # See the documentation for `Mix` for more info on aliases.
+  defp aliases do
+    [
+ #    setup: ["deps.get", "assets.setup"],
+ #    "assets.setup": ["tailwind.install --if-missing", "cmd --cd assets pwd", "cmd --cd assets npm install"],
+ #    "assets.deploy": ["tailwind default --minify", "cmd --cd assets node build.js --deploy", "phx.digest"]
+    ]
+  end
+
 end

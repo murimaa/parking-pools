@@ -15,7 +15,7 @@ config :parking_pool_web, ParkingPoolWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "kNlcwnf/B7Pr0qSQIZPs/PQ0QR/5lsxZEHCvLVo/Hw2Cn4yXFJd/Q4VJPIiJa9aP",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    node: ["build.js", "--watch", cd: Path.expand("../apps/parking_pool_web/assets", __DIR__)],
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
