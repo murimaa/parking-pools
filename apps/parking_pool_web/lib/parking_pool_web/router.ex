@@ -1,6 +1,5 @@
 defmodule ParkingPoolWeb.Router do
   use ParkingPoolWeb, :router
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -20,6 +19,13 @@ defmodule ParkingPoolWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/api", ParkingPoolWeb do
+    pipe_through :api
+
+    get "/spaces",  ApiController, :list
+    post "/space/:id/reserve",  ApiController, :reserve
+    post "/space/:id/free",  ApiController, :free
+  end
   # Other scopes may use custom stacks.
   # scope "/api", ParkingPoolWeb do
   #   pipe_through :api

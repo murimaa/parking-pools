@@ -2,18 +2,37 @@
     export let socket;
     export let id;
 
-    let reserved = true;
+    let busy = true;
+
+    let reserved = false;
 
     const channel = socket.channel(`parking_space:${id}`, {});
     channel.join()
 
-    function onClick(e) {
-        reserved = !reserved;
+    channel.on('status', function (payload) {
+        busy = false;
+        reserved = payload.reserved;
+    });
+
+    const reserve = async (e) => {
         e.preventDefault();
+        const res = await fetch(`/api/space/${id}/reserve`, {
+            method: "post"
+        });
+        payload = await res.json()
+        reserved = payload.reserved;
+    }
+    const free = async (e) => {
+        e.preventDefault();
+        const res = await fetch(`/api/space/${id}/free`, {
+            method: "post"
+        });
+        payload = await res.json()
+        reserved = payload.reserved;
     }
 </script>
             <a
-                    on:click={onClick}
+                    on:click={reserved ? free : reserve}
                     href=""
                     class="group relative rounded-2xl px-6 py-4 text-sm font-semibold leading-6 text-zinc-900 sm:py-6"
             >
