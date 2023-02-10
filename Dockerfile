@@ -1,7 +1,7 @@
 FROM elixir:1.14.3-alpine AS build
 
 # install build dependencies
-RUN apk add --no-cache --update build-base=0.5-r3 git=2.36.4-r0
+RUN apk add --no-cache --update build-base git nodejs npm
 
 # prepare build dir
 WORKDIR /app
@@ -18,6 +18,8 @@ COPY mix.exs mix.lock ./
 COPY config config
 # compile and build release
 COPY apps apps
+
+RUN cd apps/parking_pool_web && mix setup
 RUN mix deps.get && \
     mix deps.compile
 

@@ -55,7 +55,7 @@ defmodule ParkingPoolWeb.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "assets.setup"],
-      "assets.setup": ["tailwind.install --if-missing", "cmd --cd assets pwd", "cmd --cd assets npm install"],
+      "assets.setup": ["tailwind.install --if-missing", "cmd --cd assets npm install"],
       "assets.deploy": ["tailwind default --minify", "cmd --cd assets node build.js --deploy", "phx.digest"]
     ]
   end
