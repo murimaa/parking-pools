@@ -31,16 +31,20 @@
         reserved = payload.reserved;
     }
 </script>
-            <a
-                    on:click={reserved ? free : reserve}
-                    href=""
-                    class="group relative rounded-2xl px-6 py-4 text-sm font-semibold leading-6 text-zinc-900 sm:py-6"
-            >
-            <span class="absolute inset-0 rounded-2xl bg-zinc-50 transition group-hover:bg-zinc-100 sm:group-hover:scale-105">
-            </span>
-                <span class="relative flex items-center gap-4 sm:flex-col">
-                    {reserved ? '🚘' : ''}
-                </span>
-            </a>
+<a
+  on:click={reserved ? free : reserve}
+  href=""
+  class="group relative rounded-xl px-6 py-6 text-sm font-semibold text-zinc-900 sm:py-10 sm:px-10"
+>
+    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition group-hover:bg-zinc-100 sm:group-hover:scale-105">
+    <span class="relative flex items-center justify-center gap-4 flex-col h-full">
+        {#if reserved}
+            <span class="text-md sm:text-3xl">🚘</span>
+        {:else}
+            <span class="font-sans text-xs font-light">free!</span>
+        {/if}
+    </span>
+    </span>
+</a>
 <style>
 </style>
