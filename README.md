@@ -9,6 +9,12 @@ are freed automatically (timeout is a few seconds right now for testing purposes
 
 Parking space states are stored in memory, so there is no persistence between restarts. 
 
+### Building and running locally with docker:
+```
+docker build -t parking_pool .
+docker run -p 4000:4000 -e SECRET_KEY_BASE=JCPmhSbWKDffcupksvBMPpOD60ziz2BqDR8zUK1K7rWPY9HcLWl1EsbJIre5xo+a -it parking_pool
+```
+
 ### Requirements:
 - Elixir & Erlang
 - Node
@@ -41,7 +47,8 @@ Api controllers: apps/parking_pool_web/lib/parking_pool_web/controllers/api_cont
 Frontend: apps/parking_pool_web/assets/js
 
 # TODO:
-- Dockerfile and ability to configure for production
+- ~~Dockerfile~~ 
+- Ability to configure for production (number of parking spaces, default reservation time etc)
 - UI and design work
 - Authentication with Microsoft
   - something like https://github.com/dwyl/elixir-auth-microsoft possibly?

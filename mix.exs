@@ -3,11 +3,20 @@ defmodule MixProject do
 
   def project do
     [
+      app: :parking_pool,
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      releases: [
+        parking_pool_full: [
+          applications: [
+            parking_pool: :permanent,
+            parking_pool_web: :permanent
+          ]
+        ]
+      ]
     ]
   end
 
@@ -25,10 +34,9 @@ defmodule MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
- #    setup: ["deps.get", "assets.setup"],
- #    "assets.setup": ["tailwind.install --if-missing", "cmd --cd assets pwd", "cmd --cd assets npm install"],
- #    "assets.deploy": ["tailwind default --minify", "cmd --cd assets node build.js --deploy", "phx.digest"]
+      #    setup: ["deps.get", "assets.setup"],
+      #    "assets.setup": ["tailwind.install --if-missing", "cmd --cd assets pwd", "cmd --cd assets npm install"],
+      #    "assets.deploy": ["tailwind default --minify", "cmd --cd assets node build.js --deploy", "phx.digest"]
     ]
   end
-
 end
