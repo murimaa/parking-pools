@@ -5,7 +5,7 @@ defmodule ParkingPool.ParkingSpace do
 
   defstruct [:display_name, :reserved_by_name, :reserved_by_uid, :reserve_timer_ref]
 
-  @default_reserve_time 5_000
+  @default_reserve_time 60_000
 
   def start_link(name, display_name) do
     GenServer.start_link(__MODULE__, display_name, name: name)
