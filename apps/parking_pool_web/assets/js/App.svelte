@@ -14,8 +14,8 @@
 <div class="flex">
     <div class="w-auto">
         <div class="mt-10 grid grid-cols-3 gap-x-6 gap-y-4">
-            {#each spaces as {id}}
-                <ParkingSpace socket={socket} id={id}/>
+            {#each spaces as {id}, idx}
+                <ParkingSpace socket={socket} id={id} number={idx+1}/>
             {/each}
         </div>
     </div>
