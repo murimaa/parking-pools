@@ -35,15 +35,15 @@
 <a
   on:click={reserved ? free : reserve}
   href=""
-  class="group relative rounded-xl px-6 py-6 text-sm font-semibold sm:py-10 sm:px-10 group-hover:bg-zinc-100 sm:group-hover:scale-105"
+  class="group transition relative rounded-xl px-10 py-10 text-sm font-semibold sm:hover:scale-105"
 >
-    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-100 transition"
+    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 group-hover:bg-zinc-100 transition"
           class:flipped={!reserved} style="transition: transform 0.6s; backface-visibility: hidden;">
     <span class="relative flex items-center justify-center gap-4 flex-col h-full">
             <span class="text-md sm:text-3xl">🚘</span>
     </span>
-        </span>
-    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-100 text-zinc-500 transition"
+    </span>
+    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 group-hover:bg-zinc-100 transition"
           class:flipped={reserved} style="backface-visibility: hidden; transition: transform 0.6s;">
     <span class="relative flex items-center justify-center gap-4 flex-col h-full"
     >
