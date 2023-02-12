@@ -23,11 +23,13 @@ defmodule ParkingPoolWeb.Router do
 
     get "/", PageController, :home
     get "/auth/microsoft", MicrosoftAuthController, :login
+    get "/auth/logout", MicrosoftAuthController, :logout
   end
 
   scope "/", ParkingPoolWeb do
     pipe_through :browser
     post "/auth/microsoft/callback", MicrosoftAuthController, :callback
+    post "/auth/microsoft/logout", MicrosoftAuthController, :logout_callback
 
   end
   scope "/api", ParkingPoolWeb do
