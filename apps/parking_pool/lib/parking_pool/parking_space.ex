@@ -16,13 +16,23 @@ defmodule ParkingPool.ParkingSpace do
     {:ok, %ParkingSpace{display_name: display_name}}
   end
 
+  # Public API
   def reserve(spot, uid, display_name), do: GenServer.call(spot, {:reserve, uid, display_name})
   def free(spot, uid), do: GenServer.call(spot, {:free, uid})
   def reserved?(spot), do: GenServer.call(spot, :reserved?)
+  def get_state(spot), do: GenServer.call(spot, :get_state)
+
+
+  # Internal
 
   def handle_call(:reserved?, _from, state = %ParkingSpace{reserved_by_uid: nil}), do: {:reply, false, state}
 
   def handle_call(:reserved?, _from, state), do: {:reply, true, state}
+
+  def handle_call(:get_state, _from, state = %ParkingSpace{reserved_by_uid: uid, reserved_by_name: name}) do
+    status = %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name}
+    {:reply, status, state}
+  end
 
   def handle_call({:reserve, uid, name}, _from, state = %ParkingSpace{reserved_by_uid: nil}) do
     Logger.info("Reserving parking spot for: #{uid}, #{name}")
@@ -41,9 +51,19 @@ defmodule ParkingPool.ParkingSpace do
     {:reply, :already_reserved, state}
   end
 
-  def handle_call({:free, _uid}, _from, state) do
+  def handle_call({:free, _uid}, _from, state = %ParkingSpace{reserved_by_uid: nil}) do
+    {:reply, {:error, :not_reserved}, state}
+  end
+
+  # Freeing own space - uid matches with reserved_by_uid
+  def handle_call({:free, uid}, _from, state = %ParkingSpace{reserved_by_uid: uid}) do
     {:ok, state} = do_free(state)
     {:reply, :ok, state}
+  end
+
+  # Matches when uid differs from reserved_by_uid
+  def handle_call({:free, _uid}, _from, state) do
+    {:reply, {:error, :not_allowed}, state}
   end
 
   def handle_continue(

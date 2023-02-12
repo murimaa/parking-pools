@@ -31,6 +31,9 @@ defmodule ParkingPool.ParkingPoolSupervisor do
 
   def list_spaces() do
     Supervisor.which_children(__MODULE__)
-    |> Enum.map(fn {id, pid, _, _} -> {id, ParkingSpace.reserved?(pid), pid} end)
+    |> Enum.map(fn {id, pid, _, _} ->
+      state = ParkingSpace.get_state(pid)
+      {id, state, pid}
+    end)
   end
 end

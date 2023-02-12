@@ -3,17 +3,24 @@ defmodule ParkingPoolWeb.ApiController do
   require Logger
 
   def list(conn, _params) do
+    {uid, _name} = conn.assigns[:user]
     spaces = ParkingPool.ParkingPoolSupervisor.list_spaces()
-    |> Enum.map(fn {id, reserved, pid} -> %{id: id, reserved: reserved} end)
+             |> Enum.map(fn {id, state, pid} -> %{id: id} end)
     json(conn, spaces)
   end
 
   def reserve(conn, %{"id" => id}) do
-    ParkingPool.ParkingSpace.reserve(String.to_existing_atom(id), "user_id", "name")
+    {uid, name} = conn.assigns[:user]
+    ParkingPool.ParkingSpace.reserve(String.to_existing_atom(id), uid, name)
     json(conn, %{id: id, reserved: true})
   end
   def free(conn, %{"id" => id}) do
-    ParkingPool.ParkingSpace.free(String.to_existing_atom(id), "user_id")
-    json(conn, %{id: id, reserved: false})
+    {uid, _} = conn.assigns[:user]
+    case ParkingPool.ParkingSpace.free(String.to_existing_atom(id), uid) do
+      :ok -> json(conn, %{id: id, reserved: false})
+      {:error, :not_reserved} -> json(conn, %{id: id, reserved: false})
+      {:error, _error} -> json(conn, %{id: id, reserved: true})
+    end
+
   end
 end

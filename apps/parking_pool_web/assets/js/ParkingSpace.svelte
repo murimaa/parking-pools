@@ -14,9 +14,7 @@
     channel.on('status', function (payload) {
         busy = false;
         reserved = payload.reserved;
-        // not available yet
-        // own = payload.own;
-        if (!reserved) own = false;
+        own = payload.own;
     });
 
     const reserve = async (e) => {
@@ -26,10 +24,9 @@
         });
         payload = await res.json()
         reserved = payload.reserved;
+        if (reserved) own = true;
         showReservationDetails = false;
 
-        // Placeholder logic - this would come from websocket based on userid
-        own = true;
     }
     const free = async (e) => {
         e.preventDefault();
@@ -43,10 +40,10 @@
     }
     const flipReserved = (e) => {
         e.preventDefault();
-        if (reserved) showReservationDetails = !showReservationDetails;
+        if (canBeFlipped) showReservationDetails = !showReservationDetails;
     }
 
-    $: canBeFlipped = reserved
+    $: canBeFlipped = reserved && !own
 </script>
 <div
   class="group transition relative rounded-xl px-14 py-14 text-sm font-semibold"
@@ -65,15 +62,22 @@
     </span>
     </span>
 
-    <!-- reserved space front side -->
+    <!-- own reserved space front side -->
     <a href="#" class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
        on:click={flipReserved}
        class:group-hover:bg-zinc-100={canBeFlipped}
        class:flipped={!reserved || showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
-        <span class="relative flex items-center justify-center gap-4 flex-col h-full">
-            <span class="text-3xl">🚘</span>
+        <span class="relative flex items-center justify-center gap-1 flex-col h-full">
             {#if own}
                 <span class="text-xs font-light text-amber-700">Your space</span>
+                <span class="text-3xl">🚘</span>
+                <button on:click={free}
+                        class="px-4 py-0 text-[0.6rem] font-light
+                                border border-emerald-500
+                                bg-emerald-300 hover:bg-emerald-400 rounded-full transition sm:_hover:scale-105">Free</button>
+
+            {:else}
+                <span class="text-3xl">🚘</span>
             {/if}
         </span>
     </a>

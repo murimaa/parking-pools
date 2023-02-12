@@ -12,7 +12,6 @@ defmodule ParkingPoolWeb.Socket.ParkingSocket do
     case Phoenix.Token.verify(socket, "user socket", token, max_age: @token_max_age) do
       {:ok, user_id} ->
         Logger.info("Websocket connected, user_id: #{user_id}")
-        IO.inspect(user_id, label: "-----user_id")
         {:ok, assign(socket, :user_id, user_id)}
       {:error, reason} ->
         :error
