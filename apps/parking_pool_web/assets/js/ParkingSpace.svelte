@@ -4,8 +4,8 @@
     export let number;
 
     let busy = true;
-
     let reserved = false;
+    let showReservationDetails = false;
 
     const channel = socket.channel(`parking_space:${id}`, {});
     channel.join()
@@ -22,6 +22,8 @@
         });
         payload = await res.json()
         reserved = payload.reserved;
+        showReservationDetails = false;
+
     }
     const free = async (e) => {
         e.preventDefault();
@@ -30,27 +32,54 @@
         });
         payload = await res.json()
         reserved = payload.reserved;
+        showReservationDetails = false;
     }
+    const flipReserved = (e) => {
+        e.preventDefault();
+        if (reserved) showReservationDetails = !showReservationDetails;
+    }
+
+    $: canBeFlipped = reserved
 </script>
-<a
-  on:click={reserved ? free : reserve}
-  href=""
-  class="group transition relative rounded-xl px-10 py-10 text-sm font-semibold sm:hover:scale-105"
+<div
+  class="group transition relative rounded-xl px-14 py-14 text-sm font-semibold"
+  class:sm:hover:scale-105={canBeFlipped}
 >
-    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 group-hover:bg-zinc-100 transition"
-          class:flipped={!reserved} style="transition: transform 0.6s; backface-visibility: hidden;">
-    <span class="relative flex items-center justify-center gap-4 flex-col h-full">
-            <span class="text-md sm:text-3xl">🚘</span>
-    </span>
-    </span>
-    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 group-hover:bg-zinc-100 transition"
+    <!-- free space front side -->
+    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+          class:group-hover:bg-zinc-100={canBeFlipped}
           class:flipped={reserved} style="backface-visibility: hidden; transition: transform 0.6s;">
-    <span class="relative flex items-center justify-center gap-4 flex-col h-full"
-    >
-            <span class="font-sans text-lg font-light">{number}</span>
+    <span class="relative flex items-center justify-center gap-4 flex-col h-full">
+        <span class="font-sans text-lg font-light">{number}</span>
+        <button on:click={reserve}
+                class="px-4 py-1 text-[0.6rem] font-light
+                border border-rose-500
+                bg-rose-300 hover:bg-rose-400 rounded-full transition sm:_hover:scale-105">Reserve</button>
     </span>
     </span>
-</a>
+
+    <!-- reserved space front side -->
+    <a href="#" class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+       on:click={flipReserved}
+       class:group-hover:bg-zinc-100={canBeFlipped}
+       class:flipped={!reserved || showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
+        <span class="relative flex items-center justify-center gap-4 flex-col h-full">
+            <span class="text-3xl">🚘</span>
+        </span>
+    </a>
+
+    <!-- reserved space back side -->
+    {#if reserved}
+    <a href="#" class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+       on:click={flipReserved}
+       class:group-hover:bg-zinc-100={canBeFlipped}
+       class:flipped={!showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
+        <span class="relative flex justify-center gap-4 flex-col h-full">
+            <span class="text-sm text-center">Show some details of the reservation here!</span>
+        </span>
+    </a>
+    {/if}
+</div>
 <style>
     .flipped {
         transform: rotateY(180deg)
