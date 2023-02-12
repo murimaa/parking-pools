@@ -74,6 +74,8 @@ defmodule ParkingPoolWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
+      get "/login", ParkingPoolWeb.DevAuthController, :login
+      get "/logout", ParkingPoolWeb.DevAuthController, :logout
       live_dashboard "/dashboard", metrics: ParkingPoolWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end

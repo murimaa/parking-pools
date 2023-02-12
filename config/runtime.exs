@@ -23,6 +23,14 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  tenant_id = System.get_env("MICROSOFT_LOGIN_TENANT_ID") || ""
+  client_id = System.get_env("MICROSOFT_LOGIN_CLIENT_ID") || ""
+  client_secret = System.get_env("MICROSOFT_LOGIN_CLIENT_SECRET") || ""
+  config :azure_ad_openid, AzureADOpenId,
+         tenant: tenant_id,
+         client_id: client_id,
+         client_secret: client_secret
+
   # ## Using releases
   #
   # If you are doing OTP releases, you need to instruct Phoenix

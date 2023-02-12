@@ -29,7 +29,7 @@ defmodule ParkingPoolWeb.MicrosoftAuthController do
     Logger.debug("Received frontchannel logout callback, removing session")
     conn
     |> clear_session()
-    |> configure_session(:drop)
+    |> configure_session(drop: true)
     |> redirect(to: "/")
   end
 
