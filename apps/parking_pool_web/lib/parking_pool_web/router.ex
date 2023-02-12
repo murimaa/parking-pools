@@ -5,8 +5,11 @@ defmodule ParkingPoolWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {ParkingPoolWeb.Layouts, :root}
-    plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :csrf do
+    plug :protect_from_forgery
   end
 
   pipeline :api do
@@ -14,11 +17,17 @@ defmodule ParkingPoolWeb.Router do
   end
 
   scope "/", ParkingPoolWeb do
-    pipe_through :browser
+    pipe_through [:browser, :csrf]
 
     get "/", PageController, :home
+    get "/auth/microsoft", MicrosoftAuthController, :login
   end
 
+  scope "/", ParkingPoolWeb do
+    pipe_through :browser
+    post "/auth/microsoft/callback", MicrosoftAuthController, :callback
+
+  end
   scope "/api", ParkingPoolWeb do
     pipe_through :api
 

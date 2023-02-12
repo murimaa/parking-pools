@@ -19,6 +19,13 @@ config :parking_pool_web, ParkingPoolWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
+
+config :azure_ad_openid, AzureADOpenId,
+  tenant: "", #"common",
+  client_id: "",
+  client_secret: ""
+# aud: <> # used to overide client_id as the value for aud
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
