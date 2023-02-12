@@ -6,6 +6,8 @@ defmodule ParkingPoolWeb.Router do
     plug :fetch_live_flash
     plug :put_root_layout, {ParkingPoolWeb.Layouts, :root}
     plug :put_secure_browser_headers
+
+    plug :put_user_token
   end
 
   pipeline :csrf do
@@ -35,10 +37,15 @@ defmodule ParkingPoolWeb.Router do
     post "/space/:id/reserve",  ApiController, :reserve
     post "/space/:id/free",  ApiController, :free
   end
-  # Other scopes may use custom stacks.
-  # scope "/api", ParkingPoolWeb do
-  #   pipe_through :api
-  # end
+
+  defp put_user_token(conn, _) do
+    if user_claims = conn |> get_session(:user_claims) do
+      token = Phoenix.Token.sign(conn, "user socket", user_claims["oid"])
+      assign(conn, :user_token, token)
+    else
+      conn
+    end
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:parking_pool_web, :dev_routes) do
