@@ -2,6 +2,7 @@
 
 Prototype of a parking space reserving app.
 Backend is made with Elixir, frontend is Svelte because why not. TailwindCSS for CSS.
+Microsoft Login is used for authentication.
 
 ![parking-pools.gif](parking-pools.gif)
 
@@ -12,8 +13,8 @@ are freed automatically (timeout is just a minute right now for testing purposes
 Parking space states are stored in memory, so there is no persistence between restarts. 
 
 ### Building and running locally with docker:
-You can run the project with docker, however its a production build so there is only Azure AD authentication, no dev login.
-See below on setting up Azure AD authentication.
+You can run the project with docker, however its a production build so there
+is only Azure AD authentication, no dev login. See below on setting up Azure AD authentication.
 ```
 docker build -t parking_pool .
 docker run -p 4000:4000 -e SECRET_KEY_BASE=JCPmhSbWKDffcupksvBMPpOD60ziz2BqDR8zUK1K7rWPY9HcLWl1EsbJIre5xo+a -it parking_pool
