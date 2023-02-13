@@ -7,6 +7,7 @@
     let reserved = false;
     let showReservationDetails = false;
     let own = false;
+    let name = '';
 
     const channel = socket.channel(`parking_space:${id}`, {});
     channel.join()
@@ -15,6 +16,7 @@
         busy = false;
         reserved = payload.reserved;
         own = payload.own;
+        name = payload.reserved_by_name;
     });
 
     const reserve = async (e) => {
@@ -89,7 +91,7 @@
        class:group-hover:bg-zinc-100={canBeFlipped}
        class:flipped={!showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
         <span class="relative flex justify-center gap-4 flex-col h-full">
-            <span class="text-sm text-center">Show some details of the reservation here!</span>
+            <span class="text-sm text-center">{name}</span>
         </span>
     </a>
     {/if}
