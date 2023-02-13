@@ -1,7 +1,9 @@
 # ParkingPool
 
 Prototype of a parking space reserving app.
-Backend is made with Elixir, frontend is Svelte because why not.
+Backend is made with Elixir, frontend is Svelte because why not. TailwindCSS for CSS.
+
+![img.png](img.png)
 
 Click on parking spaces to reserve them. Connect with any number
 of browsers and parking spaces synchronise between them. Parking spaces
@@ -69,10 +71,12 @@ Some options required in Azure Portal:
 - ~~Dockerfile~~ 
 - Ability to configure for production (number of parking spaces, default reservation time etc)
 - ~~Authentication with Microsoft~~
-- Show name and time of reservation
-- UI and design work
+- Show ~~name~~ and time of reservation
+- Improve responsiveness
+- Improve UI and design
 - ~~Prevent canceling other peoples reservations~~
 - ...
+- Persistence (not a high priority at this time I think)
 
 
 
