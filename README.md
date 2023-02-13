@@ -3,7 +3,7 @@
 Prototype of a parking space reserving app.
 Backend is made with Elixir, frontend is Svelte because why not. TailwindCSS for CSS.
 
-![img.png](img.png)
+![parking-pools.gif](parking-pools.gif)
 
 Click on parking spaces to reserve them. Connect with any number
 of browsers and parking spaces synchronise between them. Parking spaces
