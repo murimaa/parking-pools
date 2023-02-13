@@ -3,17 +3,17 @@ defmodule ParkingPool.ParkingSpace do
   alias __MODULE__
   require Logger
 
-  defstruct [:display_name, :reserved_by_name, :reserved_by_uid, :reserve_timer_ref]
+  defstruct [:id, :display_name, :reserved_by_name, :reserved_by_uid, :reserve_timer_ref]
 
   @default_reserve_time 60_000
 
-  def start_link(name, display_name) do
-    GenServer.start_link(__MODULE__, display_name, name: name)
+  def start_link(id, display_name) do
+    GenServer.start_link(__MODULE__, {id, display_name}, name: id)
   end
 
-  def init(display_name) do
+  def init({id, display_name}) do
     Logger.info("Initializing parking space #{display_name}")
-    {:ok, %ParkingSpace{display_name: display_name}}
+    {:ok, %ParkingSpace{id: id, display_name: display_name}}
   end
 
   # Public API
@@ -37,14 +37,7 @@ defmodule ParkingPool.ParkingSpace do
   def handle_call({:reserve, uid, name}, _from, state = %ParkingSpace{reserved_by_uid: nil}) do
     Logger.info("Reserving parking spot for: #{uid}, #{name}")
 
-    state = %ParkingSpace{
-      state
-      | reserve_timer_ref: nil,
-        reserved_by_uid: uid,
-        reserved_by_name: name
-    }
-
-    {:reply, :ok, state, {:continue, {:schedule_free, @default_reserve_time}}}
+    {:reply, :ok, update_reservation(state, uid, name), {:continue, {:schedule_free, @default_reserve_time}}}
   end
 
   def handle_call({:reserve, display_name, uid}, _from, state) do
@@ -89,14 +82,30 @@ defmodule ParkingPool.ParkingSpace do
 
   defp do_free(state = %ParkingSpace{reserve_timer_ref: timer_ref}) do
     Logger.info("Freeing parking space")
-    {:ok, reset_state(state)}
+    {:ok, reset_reservation(state)}
   end
 
-  defp reset_state(state = %ParkingSpace{reserve_timer_ref: timer_ref}) do
+  defp reset_reservation(state = %ParkingSpace{reserve_timer_ref: timer_ref}) do
+    new_state = %ParkingSpace{state | reserve_timer_ref: nil, reserved_by_uid: nil, reserved_by_name: nil}
     cancel_timer(timer_ref)
-    %ParkingSpace{state | reserve_timer_ref: nil, reserved_by_uid: nil, reserved_by_name: nil}
+    broadcast_state(new_state)
+    new_state
+  end
+  defp update_reservation(state = %ParkingSpace{reserve_timer_ref: timer_ref}, uid, name) do
+    new_state = %ParkingSpace{
+      state
+    | reserve_timer_ref: nil,
+      reserved_by_uid: uid,
+      reserved_by_name: name
+    }
+    cancel_timer(timer_ref)
+    broadcast_state(new_state)
+    new_state
   end
 
+  defp broadcast_state(_state = %ParkingSpace{id: id, reserved_by_uid: uid, reserved_by_name: name}) do
+    Phoenix.PubSub.broadcast(:parking_pool_pubsub, "parking_space:#{id}", {:state_change, %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name}})
+  end
   defp cancel_timer(nil), do: false
   defp cancel_timer(timer_ref), do: Process.cancel_timer(timer_ref)
 end

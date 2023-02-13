@@ -5,13 +5,16 @@ defmodule ParkingPool.Application do
 
   use Application
 
+  @registry :parking_pool
+
   @impl true
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: ParkingPool.Worker.start_link(arg)
       # {ParkingPool.Worker, arg}
       {Registry, [keys: :unique, name: @registry]},
-      {ParkingPool.ParkingPoolSupervisor, []}
+      {ParkingPool.ParkingPoolSupervisor, []},
+      {Phoenix.PubSub, [name: :parking_pool_pubsub, adapter: Phoenix.PubSub.PG2]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
