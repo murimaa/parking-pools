@@ -10,7 +10,9 @@ defmodule ParkingPool.ParkingPoolSupervisor do
     :parking_space_3,
     :parking_space_4,
     :parking_space_5,
-    :parking_space_6
+    :parking_space_6,
+    :parking_space_7,
+    :parking_space_8
   ]
 
   def start_link(_arg) do

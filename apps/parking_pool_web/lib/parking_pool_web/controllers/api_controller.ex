@@ -6,6 +6,7 @@ defmodule ParkingPoolWeb.ApiController do
     {uid, _name} = conn.assigns[:user]
     spaces = ParkingPool.ParkingPoolSupervisor.list_spaces()
              |> Enum.map(fn {id, state, pid} -> %{id: id} end)
+             |> Enum.sort_by(& &1.id)
     json(conn, spaces)
   end
 
