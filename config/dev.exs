@@ -19,12 +19,14 @@ config :parking_pool_web, ParkingPoolWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
-
-config :azure_ad_openid, AzureADOpenId,
-  tenant: "", #"common",
-  client_id: "",
-  client_secret: ""
-# aud: <> # used to overide client_id as the value for aud
+config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
+       client_id: "",
+       client_secret: "",
+       # Special tenant_id for Personal Microsoft accounts:
+       tenant: "9188040d-6c67-4c5b-b112-36a304b66dad",
+       scope: "openid email profile",
+       redirect_uri: "http://localhost:4000/auth/microsoft/callback",
+       logout_redirect_url: "http://localhost:4000/auth/microsoft/logout"
 
 # ## SSL Support
 #

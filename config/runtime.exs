@@ -13,12 +13,14 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
+  scheme = System.get_env("PUBLIC_SCHEME") || "https"
+
   config :parking_pool_web, ParkingPoolWeb.Endpoint,
     # Public url of app
     url: [
       host: System.get_env("PUBLIC_HOST") || "localhost",
       port: String.to_integer(System.get_env("PUBLIC_PORT") || System.get_env("PORT") || "4000"),
-      scheme: System.get_env("PUBLIC_SCHEME") || "http"
+      scheme: scheme
     ],
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -32,10 +34,26 @@ if config_env() == :prod do
   client_id = System.get_env("MICROSOFT_LOGIN_CLIENT_ID") || ""
   client_secret = System.get_env("MICROSOFT_LOGIN_CLIENT_SECRET") || ""
 
+  login_callback_url =
+    System.get_env("MICROSOFT_LOGIN_CALLBACK_URL") ||
+      "#{scheme}://#{System.get_env("PUBLIC_HOST")}/auth/microsoft/callback"
+
+  logout_callback_url =
+    System.get_env("MICROSOFT_LOGOUT_CALLBACK_URL") ||
+      "#{scheme}://#{System.get_env("PUBLIC_HOST")}/auth/microsoft/logout"
+
   config :azure_ad_openid, AzureADOpenId,
     tenant: tenant_id,
     client_id: client_id,
     client_secret: client_secret
+
+  config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
+    client_id: client_id,
+    client_secret: client_secret,
+    tenant: tenant_id,
+    scope: "openid email profile",
+    redirect_uri: login_callback_url,
+    logout_redirect_url: logout_callback_url
 
   # ## Using releases
   #

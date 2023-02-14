@@ -49,7 +49,7 @@ defmodule ParkingPoolWeb.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:azure_ad_openid, "~> 0.2"}
+      {:oauth_azure_activedirectory, "~> 1.0.0"}
     ]
   end
 
