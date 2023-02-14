@@ -52,7 +52,7 @@
   class:sm:hover:scale-105={canBeFlipped}
 >
     <!-- free space front side -->
-    <span class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+    <div class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
           class:group-hover:bg-zinc-100={canBeFlipped}
           class:flipped={reserved} style="backface-visibility: hidden; transition: transform 0.6s;">
     <span class="relative flex items-center justify-center gap-4 flex-col h-full">
@@ -62,13 +62,14 @@
                 border border-rose-500
                 bg-rose-300 hover:bg-rose-400 rounded-full transition sm:_hover:scale-105">Reserve</button>
     </span>
-    </span>
+    </div>
 
-    <!-- own reserved space front side -->
-    <a href="#" class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
-       on:click={flipReserved}
-       class:group-hover:bg-zinc-100={canBeFlipped}
-       class:flipped={!reserved || showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
+    <!-- reserved space front side -->
+    <div class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+         on:click={flipReserved}
+         class:group-hover:bg-zinc-100={canBeFlipped}
+         class:cursor-pointer={canBeFlipped}
+         class:flipped={!reserved || showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
         <span class="relative flex items-center justify-center gap-1 flex-col h-full">
             {#if own}
                 <span class="text-xs font-light text-amber-700">Your space</span>
@@ -82,18 +83,18 @@
                 <span class="text-3xl">🚘</span>
             {/if}
         </span>
-    </a>
+    </div>
 
     <!-- reserved space back side -->
     {#if reserved}
-    <a href="#" class="absolute shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
+    <div class="absolute cursor-pointer shadow-md inset-0 rounded-xl py-1 bg-zinc-50 transition"
        on:click={flipReserved}
        class:group-hover:bg-zinc-100={canBeFlipped}
        class:flipped={!showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
         <span class="relative flex justify-center gap-4 flex-col h-full">
             <span class="text-sm text-center">{name}</span>
         </span>
-    </a>
+    </div>
     {/if}
 </div>
 <style>
