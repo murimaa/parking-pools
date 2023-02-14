@@ -23,7 +23,7 @@ defmodule ParkingPoolWeb.MixProject do
   def application do
     [
       mod: {ParkingPoolWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :inets]
     ]
   end
 
