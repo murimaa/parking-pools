@@ -14,7 +14,12 @@ if config_env() == :prod do
       """
 
   config :parking_pool_web, ParkingPoolWeb.Endpoint,
-    url: [host: System.get_env("HOST") || "localhost", port: String.to_integer(System.get_env("PORT") || "4000"), scheme: "http"],
+    # Public url of app
+    url: [
+      host: System.get_env("PUBLIC_HOST") || "localhost",
+      port: String.to_integer(System.get_env("PUBLIC_PORT") || System.get_env("PORT") || "4000"),
+      scheme: System.get_env("PUBLIC_SCHEME") || "http"
+    ],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -26,10 +31,11 @@ if config_env() == :prod do
   tenant_id = System.get_env("MICROSOFT_LOGIN_TENANT_ID") || ""
   client_id = System.get_env("MICROSOFT_LOGIN_CLIENT_ID") || ""
   client_secret = System.get_env("MICROSOFT_LOGIN_CLIENT_SECRET") || ""
+
   config :azure_ad_openid, AzureADOpenId,
-         tenant: tenant_id,
-         client_id: client_id,
-         client_secret: client_secret
+    tenant: tenant_id,
+    client_id: client_id,
+    client_secret: client_secret
 
   # ## Using releases
   #

@@ -15,10 +15,11 @@ COPY mix.exs mix.lock ./
 COPY config config
 COPY apps apps
 
-RUN cd apps/parking_pool_web && mix setup
+RUN cd apps/parking_pool_web && mix setup 
 RUN mix deps.get && \
     mix deps.compile
 
+RUN cd apps/parking_pool_web && mix assets.deploy
 RUN mix phx.digest && \
     mix compile && \
     mix release parking_pool_full
@@ -37,9 +38,4 @@ RUN chown nobody:nobody /app
 USER nobody:nobody
 
 ENTRYPOINT ["bin/parking_pool_full"]
-
-# "start_iex" starts it in an IEx console
-# which is handy if running locally.
-# Normally we'd have "start" here.
-# TODO: change to "start"
-CMD ["start_iex"]
+CMD ["start"]
