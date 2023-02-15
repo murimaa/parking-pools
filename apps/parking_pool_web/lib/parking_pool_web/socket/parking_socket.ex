@@ -2,8 +2,8 @@ defmodule ParkingPoolWeb.Socket.ParkingSocket do
   use Phoenix.Socket
   require Logger
 
-  # 1209600 is equivalent to two weeks in seconds
-  @token_max_age 1_209_600
+   # 30 days
+  @token_max_age 30 * 86400
 
   channel "parking_space:*", ParkingPoolWeb.Socket.ParkingChannel
 
@@ -14,7 +14,7 @@ defmodule ParkingPoolWeb.Socket.ParkingSocket do
         Logger.info("Websocket connected, user_id: #{user_id}")
         {:ok, assign(socket, :user_id, user_id)}
       {:error, reason} ->
-        :error
+        {:error, "unauthorized"}
     end
   end
 

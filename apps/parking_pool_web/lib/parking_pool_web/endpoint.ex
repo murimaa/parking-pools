@@ -8,7 +8,9 @@ defmodule ParkingPoolWeb.Endpoint do
     store: :cookie,
     key: "_parking_pool_web_key",
     signing_salt: "0BxhZB9Q",
-    same_site: "Lax"
+    same_site: "Lax",
+    # 30 days
+    max_age: 30 * 86400
   ]
 
   socket "/socket", ParkingPoolWeb.Socket.ParkingSocket, websocket: true, longpoll: false

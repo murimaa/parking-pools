@@ -18,7 +18,7 @@ defmodule ParkingPoolWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
-
+    plug :verify_user
     plug :put_user
   end
 
@@ -60,6 +60,17 @@ defmodule ParkingPoolWeb.Router do
       assign(conn, :user, {oid, name})
     else
       conn
+    end
+  end
+
+  def verify_user(conn, _) do
+    case conn |> get_session(:user_claims) do
+      nil ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{})
+        |> halt()
+      _ -> conn
     end
   end
   # Enable LiveDashboard and Swoosh mailbox preview in development
