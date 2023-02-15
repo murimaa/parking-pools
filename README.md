@@ -55,10 +55,7 @@ and websockets.
 You can specify the keys required either in `config/dev.exs` (for running locally)
 or as environment variables for production build / running with docker.
 
-The environment variables are:
-- `MICROSOFT_LOGIN_TENANT_ID`
-- `MICROSOFT_LOGIN_CLIENT_ID`
-- `MICROSOFT_LOGIN_CLIENT_SECRET`
+See environment variables.
 
 It's pretty easy to setup Azure AD with your personal live account for testing locally.
 Some options required in Azure Portal:
@@ -66,21 +63,37 @@ Some options required in Azure Portal:
   - Web --> Redirect URIs: http://localhost:4000/auth/microsoft/callback
   - ID tokens (used for implicit and hybrid flows)
 - API permissions
-  - openid, profile, User.Read might be required, though not sure
+  - openid, profile might be required, though not sure
   
 # TODO:
 - ~~Dockerfile~~ 
 - Ability to configure for production (number of parking spaces, default reservation time etc)
+- Better error handling, for example request failing due to session timeout
 - ~~Authentication with Microsoft~~
 - Show ~~name~~ and time of reservation
-- Improve responsiveness
-- Improve UI and design
 - ~~Prevent canceling other peoples reservations~~
+- Ability alter your own reservation length
+- Refactor frontend code to be more structured and clean
 - ...
-- Persistence (not a high priority at this time I think)
+- Improve design
+- Persistence (not a high priority at this time I think unless there's going to be frequent deployments/restarts or some other reason)
 
+## Deployment
 
+Application should be deployed behind a load balancer or some such for https connection. App itself listens on http.
 
+Following env variables are required for production build:
+
+- `PUBLIC_HOST` - the public facing host name of the app, for example parking.example.com
+- `PUBLIC_PORT` - the public facing port. Set this to 443 for https.
+- `PUBLIC_SCHEME` - https / http. Default is https.
+- `PORT` - internal (http) port. Default: 4000
+- `RESERVATION_TIME_MINUTES` default duration of reservation
+
+For Microsoft Login:
+- `MICROSOFT_LOGIN_CLIENT_ID` The App ID in Azure AD
+- `MICROSOFT_LOGIN_TENANT_ID` Your tenant id. 9188040d-6c67-4c5b-b112-36a304b66dad is a special value if you want to allow personal Microsoft accounts only.
+- `MICROSOFT_LOGIN_CLIENT_SECRET`
 
 
 ## Learn more
