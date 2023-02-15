@@ -5,8 +5,6 @@ defmodule ParkingPool.ParkingSpace do
 
   defstruct [:id, :display_name, :reserved_by_name, :reserved_by_uid, :reserve_timer_ref]
 
-  @default_reserve_time Application.get_env(:parking_pool, :reservation_time)
-
   def start_link(id, display_name) do
     GenServer.start_link(__MODULE__, {id, display_name}, name: id)
   end
@@ -93,7 +91,7 @@ defmodule ParkingPool.ParkingSpace do
   end
   defp update_reservation(state = %ParkingSpace{reserve_timer_ref: timer_ref}, uid, name) do
     cancel_timer(timer_ref)
-    timer_ref = Process.send_after(self(), :free, @default_reserve_time)
+    timer_ref = Process.send_after(self(), :free, get_reservation_time())
     new_state = %ParkingSpace{
       state
     | reserve_timer_ref: timer_ref,
@@ -101,7 +99,7 @@ defmodule ParkingPool.ParkingSpace do
       reserved_by_name: name
     }
 
-    Logger.info("Will be freed in #{@default_reserve_time / 1000} s")
+    Logger.info("Will be freed in #{get_reservation_time() / 1000} s")
 
     broadcast_state(new_state)
     new_state
@@ -117,6 +115,7 @@ defmodule ParkingPool.ParkingSpace do
   defp expire_time(timer_ref) do
     DateTime.utc_now |> DateTime.add(Process.read_timer(timer_ref), :millisecond)
   end
+  defp get_reservation_time(), do: Application.get_env(:parking_pool, :reservation_time)
   defp get_broadcast_status(state = %ParkingSpace{id: id, reserved_by_uid: uid, reserved_by_name: name, reserve_timer_ref: timer_ref}), do:
   %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name, expire_time: expire_time(timer_ref)}
 end
