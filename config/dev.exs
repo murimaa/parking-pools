@@ -1,5 +1,10 @@
 import Config
 
+
+config :parking_pool,
+       reservation_time: 8 * 60_000
+
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
