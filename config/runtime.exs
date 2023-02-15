@@ -6,6 +6,16 @@ if config_env() == :prod do
   # want to use a different value for prod and you most likely don't want
   # to check this value into version control, so we use an environment
   # variable instead.
+
+
+  reservation_time_minutes = System.get_env("RESERVATION_TIME_MINUTES") ||
+    raise """
+    environment variable RESERVATION_TIME_MINUTES is missing.
+    """
+
+  config :parking_pool,
+         reservation_time: String.to_integer(reservation_time_minutes) * 60_000
+
   secret_key_base =
     System.get_env("SECRET_KEY_BASE") ||
       raise """
