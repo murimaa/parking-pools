@@ -61,7 +61,7 @@ if config_env() == :prod do
     client_id: client_id,
     client_secret: client_secret,
     tenant: tenant_id,
-    scope: "openid email profile",
+    scope: "openid profile",
     redirect_uri: login_callback_url,
     logout_redirect_url: logout_callback_url
 
