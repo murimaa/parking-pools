@@ -30,17 +30,17 @@ defmodule ParkingPool.ParkingSpace do
   def handle_call(:reserved?, _from, state), do: {:reply, true, state}
 
   def handle_call(:get_state, _from, state = %ParkingSpace{reserved_by_uid: uid, reserved_by_name: name}) do
-    status = %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name}
+    status = get_broadcast_status(state)
     {:reply, status, state}
   end
 
   def handle_call({:reserve, uid, name}, _from, state = %ParkingSpace{reserved_by_uid: nil}) do
     Logger.info("Reserving parking spot for: #{uid}, #{name}")
 
-    {:reply, :ok, update_reservation(state, uid, name), {:continue, {:schedule_free, @default_reserve_time}}}
+    {:reply, :ok, update_reservation(state, uid, name)}
   end
 
-  def handle_call({:reserve, display_name, uid}, _from, state) do
+  def handle_call({:reserve, _display_name, _uid}, _from, state) do
     {:reply, :already_reserved, state}
   end
 
@@ -59,12 +59,12 @@ defmodule ParkingPool.ParkingSpace do
     {:reply, {:error, :not_allowed}, state}
   end
 
+  # Not used anymore, but will be handy when adding a feature to alter reservation time
   def handle_continue(
         {:schedule_free, time_ms},
         state = %ParkingSpace{reserve_timer_ref: timer_ref}
       ) do
     Logger.info("Will be freed in #{time_ms / 1000} s")
-
     cancel_timer(timer_ref)
     timer_ref = Process.send_after(self(), :free, time_ms)
     {:noreply, %ParkingSpace{state | reserve_timer_ref: timer_ref}}
@@ -80,7 +80,7 @@ defmodule ParkingPool.ParkingSpace do
     {:ok, state}
   end
 
-  defp do_free(state = %ParkingSpace{reserve_timer_ref: timer_ref}) do
+  defp do_free(state = %ParkingSpace{}) do
     Logger.info("Freeing parking space")
     {:ok, reset_reservation(state)}
   end
@@ -92,20 +92,31 @@ defmodule ParkingPool.ParkingSpace do
     new_state
   end
   defp update_reservation(state = %ParkingSpace{reserve_timer_ref: timer_ref}, uid, name) do
+    cancel_timer(timer_ref)
+    timer_ref = Process.send_after(self(), :free, @default_reserve_time)
     new_state = %ParkingSpace{
       state
-    | reserve_timer_ref: nil,
+    | reserve_timer_ref: timer_ref,
       reserved_by_uid: uid,
       reserved_by_name: name
     }
-    cancel_timer(timer_ref)
+
+    Logger.info("Will be freed in #{@default_reserve_time / 1000} s")
+
     broadcast_state(new_state)
     new_state
   end
 
-  defp broadcast_state(_state = %ParkingSpace{id: id, reserved_by_uid: uid, reserved_by_name: name}) do
-    Phoenix.PubSub.broadcast(:parking_pool_pubsub, "parking_space:#{id}", {:state_change, %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name}})
+  defp broadcast_state(state = %ParkingSpace{id: id}) do
+    status = get_broadcast_status(state)
+    Phoenix.PubSub.broadcast(:parking_pool_pubsub, "parking_space:#{id}", {:state_change, status})
   end
   defp cancel_timer(nil), do: false
   defp cancel_timer(timer_ref), do: Process.cancel_timer(timer_ref)
+  defp expire_time(nil), do: nil
+  defp expire_time(timer_ref) do
+    DateTime.utc_now |> DateTime.add(Process.read_timer(timer_ref), :millisecond)
+  end
+  defp get_broadcast_status(state = %ParkingSpace{id: id, reserved_by_uid: uid, reserved_by_name: name, reserve_timer_ref: timer_ref}), do:
+  %{reserved: !is_nil(uid), reserved_by_uid: uid, reserved_by_name: name, expire_time: expire_time(timer_ref)}
 end

@@ -8,6 +8,7 @@
     let showReservationDetails = false;
     let own = false;
     let name = '';
+    let time = '';
 
     const channel = socket.channel(`parking_space:${id}`, {});
     channel.join()
@@ -16,6 +17,11 @@
         busy = false;
         reserved = payload.reserved;
         own = payload.own;
+        if (payload.expire_time) {
+            time = new Date(Date.parse(payload.expire_time)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        } else {
+            time = '';
+        }
         name = payload.reserved_by_name;
     });
 
@@ -70,10 +76,11 @@
          class:group-hover:bg-zinc-100={canBeFlipped}
          class:cursor-pointer={canBeFlipped}
          class:flipped={!reserved || showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
-        <span class="relative flex items-center justify-center gap-1 flex-col h-full">
+        <span class="relative flex items-center justify-center gap-2 flex-col h-full">
             {#if own}
                 <span class="text-xs font-light text-amber-700">Your space</span>
                 <span class="text-3xl">🚘</span>
+                <span class="text-xs font-light text-amber-700">→ {time}</span>
                 <button on:click={free}
                         class="px-4 py-0 text-[0.6rem] font-light
                                 border border-emerald-500
@@ -93,6 +100,7 @@
        class:flipped={!showReservationDetails} style="transition: transform 0.6s; backface-visibility: hidden;">
         <span class="relative flex justify-center gap-4 flex-col h-full">
             <span class="text-sm text-center">{name}</span>
+            <span class="text-sm text-center font-light text-sm">→ {time}</span>
         </span>
     </div>
     {/if}
