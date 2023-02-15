@@ -29,7 +29,7 @@ config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
        client_secret: "",
        # Special tenant_id for Personal Microsoft accounts:
        tenant: "9188040d-6c67-4c5b-b112-36a304b66dad",
-       scope: "openid email profile",
+       scope: "openid profile",
        redirect_uri: "http://localhost:4000/auth/microsoft/callback",
        logout_redirect_url: "http://localhost:4000/auth/microsoft/logout"
 
