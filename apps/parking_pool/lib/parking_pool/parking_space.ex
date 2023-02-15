@@ -5,7 +5,7 @@ defmodule ParkingPool.ParkingSpace do
 
   defstruct [:id, :display_name, :reserved_by_name, :reserved_by_uid, :reserve_timer_ref]
 
-  @default_reserve_time Application.compile_env(:parking_pool, :reservation_time)
+  @default_reserve_time Application.get_env(:parking_pool, :reservation_time)
 
   def start_link(id, display_name) do
     GenServer.start_link(__MODULE__, {id, display_name}, name: id)
